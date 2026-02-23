@@ -1,15 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-interface Particle {
-  id: number;
-  left: number;
-  top: number;
-  delay: number;
-  duration: number;
-  size: number;
-}
+import Particles from "@/components/particicles";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -17,23 +10,6 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
-  const [particles, setParticles] = useState<Particle[]>([]);
-
-  const generateParticles = (count: number): Particle[] =>
-    Array.from({ length: count }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      top: Math.random() * 100,
-      delay: Math.random() * 4,
-      duration: 3 + Math.random() * 4,
-      size: 2 + Math.random() * 4,
-    }));
-
-  useEffect(() => {
-    setMounted(true);
-    setParticles(generateParticles(20));
-  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,21 +24,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center overflow-hidden relative font-['DM_Sans'] bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,var(--c3)_0%,var(--c1)_45%,var(--c0)_100%)]">
-      {mounted &&
-        particles.map((p) => (
-          <div
-            key={p.id}
-            className="absolute bg-white/10 rounded-full animate-float"
-            style={{
-              left: `${p.left}%`,
-              top: `${p.top}%`,
-              width: `${p.size}px`,
-              height: `${p.size}px`,
-              animationDelay: `${p.delay}s`,
-              animationDuration: `${p.duration}s`,
-            }}
-          />
-        ))}
+      <Particles />
       <div className="bsolute inset-0 bg-grid-pattern bg-grid mask-fade-radial">
         <div className="relative w-lg p-8 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl">
           <div className="flex items-center justify-left gap-2 mb-6">
@@ -90,7 +52,7 @@ export default function LoginPage() {
           <p className="text-white mb-6 text-left">
             Ingresa tus credenciales para continuar
           </p>
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit} method="POST">
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div className="relative">
               <input
                 type="text"
