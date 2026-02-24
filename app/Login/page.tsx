@@ -1,31 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 
 import Particles from "@/components/particicles";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const router = useRouter();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
-    // Aquí iría la lógica de login
-    setTimeout(() => {
-      setLoading(false);
-      setError("Usuario o contraseña incorrectos");
-    }, 2000);
-  };
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email)
+      .single();
+
+    if (error || !data) {
+      alert("Usuario no encontrado");
+      return;
+    }
+
+    if (data.password !== password) {
+      alert("Contraseña incorrecta");
+      return;
+    }
+
+    router.push("/dashboard");
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center overflow-hidden relative font-['DM_Sans'] bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,var(--c3)_0%,var(--c1)_45%,var(--c0)_100%)]">
       <Particles />
-      <div className="bsolute inset-0 bg-grid-pattern bg-grid mask-fade-radial">
+      <div className="bsolute inset-0 bg-grid-pattern bg-grid">
         <div className="relative w-lg p-8 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl">
           <div className="flex items-center justify-left gap-2 mb-6">
             <div className="w-10 h-10 bg-[linear-gradient(135deg,var(--c4),var(--c3))] rounded-xl flex items-center justify-center shadow-[0_0_20px_#000000] animate-pulse-custom">
@@ -55,13 +69,13 @@ export default function LoginPage() {
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div className="relative">
               <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                onFocus={() => setFocused("username")}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => setFocused("email")}
                 onBlur={() => setFocused(null)}
                 className="w-full p-3 pl-10 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-c4 transition-colors"
-                placeholder="Usuario"
+                placeholder="email"
               />
               <svg
                 width="20"
@@ -86,7 +100,7 @@ export default function LoginPage() {
                 onFocus={() => setFocused("password")}
                 onBlur={() => setFocused(null)}
                 className="w-full p-3 pl-10 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-c4 transition-colors"
-                placeholder="Contraseña"
+                placeholder="password"
               />
               <svg
                 width="20"
