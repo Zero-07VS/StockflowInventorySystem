@@ -8,7 +8,7 @@ export default function NotFound() {
             <Particles />   
             <h1 className="text-white text-2xl font-bold">404 - Not Found</h1>
             <p className="text-white text-lg">La página que buscas no existe</p>
-            <Link href="/login" className="inline-block cursor-pointer items-center justify-center rounded-xl border-[1.58px] border-zinc-600 bg-zinc-950 px-5 py-3 font-medium text-slate-200 shadow-md transition-all duration-300 hover:[transform:translateY(-.335rem)] hover:shadow-xl">Volver</Link>
+            <Link href="/dashboard" className="inline-block cursor-pointer items-center justify-center rounded-xl border-[1.58px] border-zinc-600 bg-zinc-950 px-5 py-3 font-medium text-slate-200 shadow-md transition-all duration-300 hover:[transform:translateY(-.335rem)] hover:shadow-xl">Volver</Link>
         </div>
     );
 }

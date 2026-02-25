@@ -15,25 +15,25 @@ export default function LoginPage() {
   const [focused, setFocused] = useState<string | null>(null);
 
 const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    const { data, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("email", email)
-      .single();
+  e.preventDefault();
+  setLoading(true);
+  setError("");
 
-    if (error || !data) {
-      alert("Usuario no encontrado");
-      return;
-    }
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-    if (data.password !== password) {
-      alert("Contraseña incorrecta");
-      return;
-    }
+  console.log(data);
+  console.log(error);
 
-    router.push("/dashboard");
+  if (error) {
+    setError(error.message);
+    setLoading(false);
+    return;
+  }
+
+  router.push("/dashboard");
 };
 
   return (
@@ -120,9 +120,9 @@ const handleSubmit = async (e: React.FormEvent) => {
             <button
               type="submit"
               disabled={loading}
-              className="inline-block cursor-pointer items-center justify-center rounded-xl border-[1.58px] border-zinc-600 bg-zinc-950 px-5 py-3 font-medium text-slate-200 shadow-md transition-all duration-300 hover:[transform:translateY(-.335rem)] hover:shadow-xl"
+              className="inline-block cursor-pointer items-center justify-center rounded-xl border-[1.58px] border-zinc-600 bg-zinc-950 px-5 py-3 font-medium text-slate-200 shadow-md transition-all duration-300 hover:[transform:translateY(-.335rem)] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Iniciando sesión..." : "Iniciar sesión"}
+              {loading ? "Cargando..." : "Iniciar sesión"}
             </button>
           </form>
           {error && <p className="text-red-500 mb-6 text-center">{error}</p>}
